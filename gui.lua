@@ -277,7 +277,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 	table.insert(self.windows, window)
 	
 	self.base = self.base or self:create("ScreenGui", {
-		Parent = game.Players.LocalPlayer.PlayerGui
+		Parent = game.CoreGui
 	})
 	
 	self.pointer = self.pointer or self:create("Frame", {
