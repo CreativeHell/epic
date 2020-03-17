@@ -229,7 +229,7 @@ local library = {windows = {}}
 
 library.settings = {
 	title = "Title text",
-	footer = "Footer text",
+	footer = "",
 	modal = true,
 	toggle = Enum.KeyCode.F8,
 	font = Enum.Font.SourceSans,
