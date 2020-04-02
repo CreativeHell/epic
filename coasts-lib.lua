@@ -30,13 +30,13 @@ local Library = {
         DropdownButton = Color3.fromRGB(35, 35, 35);
         DropdownButtonHover = Color3.fromRGB(45, 45, 45);
         Underline = Color3.fromRGB(255, 255, 255);
-        Border = Color3.fromRGB(0, 0, 0);
+        Border = Color3.fromRGB(128, 128, 128);
         Text = Color3.fromRGB(255, 255, 255);
         PlaceholderText = Color3.fromRGB(255, 255, 255);
     };
 
     Settings = {
-        MainTextSize = 15;
+        MainTextSize = 13;
         MainTweenTime = 1;
         RippleTweenTime = 1;
         CheckboxTweenTime = 0.5;
