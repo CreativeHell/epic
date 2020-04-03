@@ -611,7 +611,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 				return toggle
 			end
 			
-			function section:AddBox(txtval, _function, keep)
+			function section:AddBox(text, txtval, _function, keep)
 				local box = {value = ""}
 				if txtval then
 					if typeof(txtval) == "function" then
