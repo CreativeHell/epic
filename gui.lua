@@ -630,7 +630,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 				checkRow()
 				section.main.Parent = tab.row
 				
-				--[[box.button = library:create("TextButton", {
+				box.button = library:create("TextButton", {
 					LayoutOrder = self.order,
 					Size = UDim2.new(1,0,0,library.settings.textsize + 22),
 					BackgroundTransparency = 1,
@@ -642,7 +642,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextYAlignment = Enum.TextYAlignment.Top,
 					Parent = self.content,
-				})]]
+				})
 				
 				box.box = library:create("TextBox", {
 					Position = UDim2.new(0,0,0,19),
