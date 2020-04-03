@@ -229,30 +229,23 @@ local library = {windows = {}}
 
 library.settings = {
 	title = "Title text",
-	footer = "by CreativeHell",
+	footer = "Footer text",
 	modal = true,
 	toggle = Enum.KeyCode.F8,
-	font = Enum.Font.SourceSans,
-	textsize = 16,
-	textstroke = false
+	font = Enum.Font.Code,
+	textsize = 14,
+	textstroke = true
 }
 
 library.colors = {
-	mainoutline = Color3.fromRGB(10,10,10),
-	secondaryoutline = Color3.fromRGB(30,30,30),
-	mainbg = Color3.fromRGB(20,20,20),
-	maintext = Color3.fromRGB(255,255,255),
-	title = Color3.fromRGB(255,255,255),
-	titlebg = Color3.fromRGB(40,40,40),
-	footer = Color3.fromRGB(240,240,240),
-	footerbg = Color3.fromRGB(35,35,35),
-	tabbutton = Color3.fromRGB(60,60,60),
-	tabbg = Color3.fromRGB(40,40,40),
-	sectiontext = Color3.fromRGB(255,255,255),
-	optionbg = Color3.fromRGB(50,50,50),
-	optiontext = Color3.fromRGB(250,250,250),
-	toggle = Color3.fromRGB(255,67,67),
-	sliderfill = Color3.fromRGB(255,67,67),
+	theme = Color3.fromRGB(218,137,6),
+	text = Color3.fromRGB(255,255,255),
+	main = Color3.fromRGB(30,30,30),
+	fade = Color3.fromRGB(50,50,50),
+	outline = Color3.fromRGB(10,10,10),
+	tabholder = Color3.fromRGB(60,60,60),
+	tabbutton = Color3.fromRGB(40,40,40),
+	tabselected = Color3.fromRGB(50,50,50)
 }
 
 function library:create(class, properties)
@@ -272,8 +265,8 @@ function library:CreateWindow(ctitle, csize, cpos)
 		end
 	end
 	cpos = cpos or Vector2.new(40,40)
-	csize = csize or Vector2.new(600,420)
-	local window = {ypos = 4, close = true, draggable = true}
+	csize = csize or Vector2.new(460,500)
+	local window = {xpos = 0, close = true, draggable = true}
 	table.insert(self.windows, window)
 	
 	self.base = self.base or self:create("ScreenGui", {
@@ -296,22 +289,29 @@ function library:CreateWindow(ctitle, csize, cpos)
 	})
 	
 	window.main = self:create("TextButton", {
-		
 		Position = UDim2.new(0,cpos.X,0,cpos.Y),
 		Size = UDim2.new(0,csize.X,0,csize.Y),
-		BackgroundColor3 = self.colors.mainbg,
-		BorderColor3 = self.colors.mainoutline,
+		BackgroundColor3 = self.colors.main,
+		BorderColor3 = self.colors.outline,
 		Text = "",
 		AutoButtonColor = false,
 		Parent = self.base
 	})
 	
+	window.shade = self:create("ImageLabel", {
+		Size = UDim2.new(1,0,0,18),
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://2916745254",
+		ImageColor3 = self.colors.fade,
+		ImageTransparency = 0.2,
+		Parent = window.main
+	})
+	
 	window.title = self:create("TextLabel", {
 		Size = UDim2.new(1,0,0,18),
-		BackgroundColor3 = self.colors.titlebg,
-		BorderColor3 = library.colors.mainoutline,
+		BackgroundTransparency = 1,
 		Text = ctitle or self.settings.title,
-		TextColor3 = self.colors.title,
+		TextColor3 = self.colors.text,
 		TextStrokeTransparency = self.settings.textstroke and 0 or 1,
 		Font = self.settings.font,
 		TextSize = self.settings.textsize,
@@ -347,12 +347,13 @@ function library:CreateWindow(ctitle, csize, cpos)
 	
 	function window:CreateTab(name)
 		local tab = {}
+		local bounds = game:GetService('TextService'):GetTextSize(name, library.settings.textsize, library.settings.font, Vector2.new(math.huge, math.huge))
 		tab.rows = {}
 		
 		local function createNewRow()
 			tab.row = library:create("Frame", {
-				Position = UDim2.new(0,csize.X/2 * #tab.rows - (1 - #tab.rows * - 67),0,0),
-				Size = UDim2.new(0,csize.X/2 - 68,1,0),
+				Position = UDim2.new(0,csize.X/2 * #tab.rows - (#tab.rows * 10),0,0),
+				Size = UDim2.new(0,csize.X/2 - 10,1,0),
 				BackgroundTransparency = 1,
 				Parent = tab.main
 			})
@@ -369,7 +370,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 			})
 			table.insert(tab.rows, tab)
 			if #tab.rows > 2 then
-				self.main.Size = self.main.Size + UDim2.new(0,csize.X/2 - 67,0,0)
+				self.main.Size = self.main.Size + UDim2.new(0,csize.X/2 - 10,0,0)
 			end
 		end
 		local function checkRow()
@@ -387,20 +388,20 @@ function library:CreateWindow(ctitle, csize, cpos)
 		end
 		
 		self.tabholder = self.tabholder or library:create("Frame", {
-			Position = UDim2.new(0,5,0,24),
-			Size = UDim2.new(0,120,1,-48),
-			BackgroundColor3 = library.colors.tabbg,
-			BorderColor3 = library.colors.mainoutline,
+			Position = UDim2.new(0,10,0,25),
+			Size = UDim2.new(1,-20,1,-55),
+			BackgroundColor3 = library.colors.tabholder,
+			BorderColor3 = library.colors.outline,
 			Parent = self.main
 		})
 		
 		self.footer = self.footer or library:create("TextLabel", {
 			Position = UDim2.new(0,0,1,0),
 			Size = UDim2.new(1,0,0,-18),
-			BackgroundColor3 = library.colors.footerbg,
-			BorderColor3 = library.colors.mainoutline,
+			BackgroundColor3 = library.colors.tabbutton,
+			BorderColor3 = library.colors.outline,
 			Text = " "..library.settings.footer,
-			TextColor3 = library.colors.footer,
+			TextColor3 = library.colors.text,
 			TextStrokeTransparency = library.settings.textstroke and 0 or 1,
 			Font = library.settings.font,
 			TextSize = library.settings.textsize,
@@ -409,38 +410,59 @@ function library:CreateWindow(ctitle, csize, cpos)
 		})
 	
 		tab.main = library:create("Frame", {
-			Position = UDim2.new(0,130,0,24),
-			Size = UDim2.new(1,-135,1,-48),
-			BackgroundColor3 = library.colors.tabbg,
-			BorderColor3 = library.colors.mainoutline,
+			Position = UDim2.new(0,0,0,20),
+			Size = UDim2.new(1,0,1,-20),
+			BackgroundColor3 = library.colors.tabselected,
+			BorderColor3 = library.colors.outline,
 			Visible = false,
-			Parent = self.main
-		})
-		
-		tab.button = library:create("TextLabel", {
-			Position = UDim2.new(0,4,0,self.ypos),
-			Size = UDim2.new(1,-8,0,20),
-			BackgroundColor3 = library.colors.tabbutton,
-			BorderColor3 = library.colors.secondaryoutline,
-			Text = name,
-			TextColor3 = library.colors.maintext,
-			TextStrokeTransparency = library.settings.textstroke and 0 or 1,
-			Font = library.settings.font,
-			TextSize = library.settings.textsize,
 			Parent = self.tabholder
 		})
 		
-		if self.ypos == 4 then
+		tab.button = library:create("Frame", {
+			
+			Position = UDim2.new(0,self.xpos,0,0),
+			Size = UDim2.new(0,bounds.X+8,0,19),
+			BorderColor3 = library.colors.outline,
+			Parent = self.tabholder
+		})
+		
+		tab.buttontop = library:create("Frame", {
+			Size = UDim2.new(1,0,1,0),
+			BackgroundColor3 = library.colors.tabbutton,
+			BorderSizePixel = 0,
+			BorderColor3 = library.colors.outline,
+			Parent = tab.button
+		})
+		
+		tab.label = library:create("TextLabel", {
+			
+			Size = UDim2.new(1,0,1,0),
+			BackgroundTransparency = 1,
+			Text = name,
+			TextColor3 = library.colors.text,
+			TextStrokeTransparency = library.settings.textstroke and 0 or 1,
+			Font = library.settings.font,
+			TextSize = library.settings.textsize,
+			Parent = tab.button
+		})
+		
+		if self.xpos == 0 then
 			self.focused = tab
 			self.focused.main.Visible = true
+			self.focused.buttontop.Size = self.focused.buttontop.Size + UDim2.new(0,0,0,1)
+			tab.buttontop.BackgroundColor3 = library.colors.tabselected
 		end
-		self.ypos = self.ypos + 24
+		self.xpos = self.xpos + bounds.X + 8
 		
-		tab.button.InputBegan:connect(function(input)
+		tab.label.InputBegan:connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 then
 				self.focused.main.Visible = false
+				self.focused.buttontop.Size = self.focused.buttontop.Size - UDim2.new(0,0,0,1)
+				self.focused.buttontop.BackgroundColor3 = library.colors.tabbutton
 				self.focused = tab
 				self.focused.main.Visible = true
+				self.focused.buttontop.Size = self.focused.buttontop.Size + UDim2.new(0,0,0,1)
+				self.focused.buttontop.BackgroundColor3 = library.colors.tabselected
 			end
 		end)
 		
@@ -451,8 +473,8 @@ function library:CreateWindow(ctitle, csize, cpos)
 			
 			section.main = library:create("Frame", {
 				Size = UDim2.new(1,0,0,0),
-				BackgroundColor3 = library.colors.tabbg,
-				BorderColor3 = library.colors.secondaryoutline,
+				BackgroundColor3 = library.colors.tabselected,
+				BorderColor3 = library.colors.outline,
 				Parent = self.row
 			})
 			
@@ -460,10 +482,10 @@ function library:CreateWindow(ctitle, csize, cpos)
 				AnchorPoint = Vector2.new(0,0.5),
 				Position = UDim2.new(0,12,0,0),
 				Size = UDim2.new(0,bounds.X + 8,0,2),
-				BackgroundColor3 = library.colors.tabbg,
+				BackgroundColor3 = library.colors.tabselected,
 				BorderSizePixel = 0,
 				Text = title,
-				TextColor3 = library.colors.sectiontext,
+				TextColor3 = library.colors.text,
 				TextStrokeTransparency = library.settings.textstroke and 0 or 1,
 				Font = library.settings.font,
 				TextSize = library.settings.textsize,
@@ -501,7 +523,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 2),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
@@ -528,7 +550,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 2),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
@@ -560,7 +582,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 2),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
@@ -572,9 +594,9 @@ function library:CreateWindow(ctitle, csize, cpos)
 					AnchorPoint = Vector2.new(0,0.5),
 					Position = UDim2.new(1,-1,0.5,0),
 					Size = UDim2.new(0,-library.settings.textsize+4,0,library.settings.textsize-4),
-					BackgroundColor3 = library.colors.optionbg,
+					BackgroundColor3 = library.colors.tabholder,
 					BorderSizePixel = 2,
-					BorderColor3 = library.colors.secondaryoutline,
+					BorderColor3 = library.colors.main,
 					Parent = toggle.button,
 				})
 				
@@ -582,7 +604,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Position = UDim2.new(0,0,0,0),
 					Size = UDim2.new(1,0,1,0),
 					BackgroundTransparency = 1,
-					BackgroundColor3 = library.colors.toggle,
+					BackgroundColor3 = library.colors.theme,
 					BorderSizePixel = 0,
 					Parent = toggle.holder,
 				})
@@ -635,7 +657,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 22),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
@@ -648,12 +670,12 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Position = UDim2.new(0,0,0,19),
 					Size = UDim2.new(1,0,0,17),
 					BackgroundTransparency = 0,
-					BackgroundColor3 = library.colors.optionbg,
-					BorderColor3 = library.colors.secondaryoutline,
+					BackgroundColor3 = library.colors.tabholder,
+					BorderColor3 = library.colors.main,
 					Text = txtval,
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					PlaceholderText = "",
-					PlaceholderColor3 = library.colors.mainoutline,
+					PlaceholderColor3 = library.colors.tabbutton,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize-2,
 					TextWrapped = true,
@@ -709,7 +731,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 22),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
@@ -722,10 +744,10 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Position = UDim2.new(0,0,0,19),
 					Size = UDim2.new(1,0,0,17),
 					BackgroundTransparency = 0,
-					BackgroundColor3 = library.colors.optionbg,
-					BorderColor3 = library.colors.secondaryoutline,
+					BackgroundColor3 = library.colors.tabholder,
+					BorderColor3 = library.colors.main,
 					Text = dropdown.value,
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
 					Parent = dropdown.button,
@@ -737,7 +759,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Rotation = 90,
 					BackgroundTransparency = 1,
 					Text = ">",
-					TextColor3 = library.colors.mainoutline,
+					TextColor3 = library.colors.tabbutton,
 					Font = Enum.Font.Arcade,
 					TextSize = 18,
 					Parent = dropdown.label,
@@ -757,8 +779,8 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,1,0),
 					BackgroundTransparency = 0,
 					BorderSizePixel = 1,
-					BackgroundColor3 = library.colors.mainbg,
-					BorderColor3 = library.colors.mainoutline,
+					BackgroundColor3 = library.colors.tabholder,
+					BorderColor3 = library.colors.outline,
 					CanvasSize = UDim2.new(0,0,0,0),
 					ScrollBarThickness = 0,
 					Visible = true,
@@ -798,10 +820,10 @@ function library:CreateWindow(ctitle, csize, cpos)
 							LayoutOrder = dropdown.order,
 							Size = UDim2.new(1,0,0,18),
 							BackgroundTransparency = 0,
-							BackgroundColor3 = library.colors.tabbg,
-							BorderColor3 = library.colors.secondaryoutline,
+							BackgroundColor3 = library.colors.tabholder,
+							BorderColor3 = library.colors.tabbutton,
 							Text = value,
-							TextColor3 = library.colors.optiontext,
+							TextColor3 = library.colors.text,
 							Font = library.settings.font,
 							TextSize = library.settings.textsize,
 							AutoButtonColor = false,
@@ -900,7 +922,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 22),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
@@ -921,7 +943,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0.5,0),
 					BackgroundTransparency = 1,
 					Text = tostring(slider.value),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize-2,
 					TextWrapped = true,
@@ -932,14 +954,14 @@ function library:CreateWindow(ctitle, csize, cpos)
 					AnchorPoint = Vector2.new(0.5,0.5),
 					Position = UDim2.new(0.5,0,0.2,0),
 					Size = UDim2.new(1,-6,0,4),
-					BackgroundColor3 = library.colors.optionbg,
-					BorderColor3 = library.colors.secondaryoutline,
+					BackgroundColor3 = library.colors.tabholder,
+					BorderColor3 = library.colors.main,
 					Parent = slider.holder,
 				})
 				
 				slider.sliderfill = library:create("Frame", {
 					Size = UDim2.new(slider.value/maxVal,0,1,0),
-					BackgroundColor3 = library.colors.sliderfill,
+					BackgroundColor3 = library.colors.theme,
 					BorderSizePixel = 0,
 					Parent = slider.sliderbar,
 				})
@@ -948,7 +970,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					AnchorPoint = Vector2.new(0.5,0.5),
 					Position = UDim2.new(slider.value/maxVal,0,0.5,0),
 					Size = UDim2.new(0,4,0,12),
-					BackgroundColor3 = library.colors.mainbg,
+					BackgroundColor3 = library.colors.main,
 					BorderSizePixel = 0,
 					Parent = slider.sliderbar,
 				})
@@ -1068,7 +1090,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 4),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
@@ -1080,10 +1102,10 @@ function library:CreateWindow(ctitle, csize, cpos)
 				bind.label = library:create("TextLabel", {
 					Position = UDim2.new(1,0,0,2),
 					Size = UDim2.new(0,-bounds.X-8,1,-4),
-					BackgroundColor3 = library.colors.optionbg,
-					BorderColor3 = library.colors.secondaryoutline,
+					BackgroundColor3 = library.colors.tabholder,
+					BorderColor3 = library.colors.main,
 					Text = bind.key.Name,
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
 					Parent = bind.button,
@@ -1199,7 +1221,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Size = UDim2.new(1,0,0,library.settings.textsize + 4),
 					BackgroundTransparency = 1,
 					Text = tostring(text),
-					TextColor3 = library.colors.optiontext,
+					TextColor3 = library.colors.text,
 					TextStrokeTransparency = library.settings.textstroke and 0 or 1,
 					Font = library.settings.font,
 					TextSize = library.settings.textsize,
@@ -1212,7 +1234,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					Position = UDim2.new(1,-1,0,3),
 					Size = UDim2.new(0,-24,0,12),
 					BorderSizePixel = 2,
-					BorderColor3 = library.colors.secondaryoutline,
+					BorderColor3 = library.colors.main,
 					Image = "rbxassetid://3887014957",
 					ScaleType = Enum.ScaleType.Tile,
 					TileSize = UDim2.new(0,8,0,8),
@@ -1231,8 +1253,8 @@ function library:CreateWindow(ctitle, csize, cpos)
 					ZIndex = 2,
 					Position = UDim2.new(0,-3,0,0),
 					Size = UDim2.new(0,-150,0,150),
-					BackgroundColor3 = library.colors.tabbg,
-					BorderColor3 = library.colors.mainoutline,
+					BackgroundColor3 = library.colors.tabholder,
+					BorderColor3 = library.colors.outline,
 					AutoButtonColor = false,
 					Visible = false,
 					Parent = color.visualize
@@ -1242,7 +1264,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					ZIndex = 2,
 					Position = UDim2.new(0,5,0,5),
 					Size = UDim2.new(1,-25,1,-25),
-					BorderColor3 = library.colors.secondaryoutline,
+					BorderColor3 = library.colors.outline,
 					Image = "rbxassetid://698052001",
 					Parent = color.container
 				})
@@ -1262,7 +1284,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					ZIndex = 2,
 					Position = UDim2.new(1,-15,0,5),
 					Size = UDim2.new(0,10,1,-25),
-					BorderColor3 = library.colors.secondaryoutline,
+					BorderColor3 = library.colors.outline,
 					Image = "rbxassetid://3641079629",
 					Parent = color.container
 				})
@@ -1285,7 +1307,7 @@ function library:CreateWindow(ctitle, csize, cpos)
 					ZIndex = 2,
 					Position = UDim2.new(0,5,1,-15),
 					Size = UDim2.new(1,-25,0,10),
-					BorderColor3 = library.colors.secondaryoutline,
+					BorderColor3 = library.colors.outline,
 					Image = "rbxassetid://3887014957",
 					ScaleType = Enum.ScaleType.Tile,
 					TileSize = UDim2.new(0,10,0,10),
@@ -1441,8 +1463,6 @@ end)
 
 UserInputService.InputChanged:connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseMovement and library.pointer then
-		library.pointer.Position = UDim2.new(0,UserInputService:GetMouseLocation().X+1,0,UserInputService:GetMouseLocation().Y-35)
+		library.pointer.Position = UDim2.new(0,UserInputService:GetMouseLocation().X,0,UserInputService:GetMouseLocation().Y-36)
 	end
 end)
-
-return library
