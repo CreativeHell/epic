@@ -30,7 +30,7 @@ local Library = {
         DropdownButton = Color3.fromRGB(35, 35, 35);
         DropdownButtonHover = Color3.fromRGB(45, 45, 45);
         Underline = Color3.fromRGB(255, 255, 255);
-        Border = Color3.fromRGB(128, 128, 128);
+        Border = Color3.fromRGB(160, 160, 160);
         Text = Color3.fromRGB(255, 255, 255);
         PlaceholderText = Color3.fromRGB(255, 255, 255);
     };
